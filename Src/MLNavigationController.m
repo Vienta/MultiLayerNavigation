@@ -8,7 +8,7 @@
 
 #define KEY_WINDOW  [[UIApplication sharedApplication]keyWindow]
 #define TOP_VIEW  [[UIApplication sharedApplication]keyWindow].rootViewController.view
-
+#define TOP_VIEW_WIDTH (TOP_VIEW.frame.size.width)
 
 #import "MLNavigationController.h"
 #import <QuartzCore/QuartzCore.h>
@@ -35,12 +35,16 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        
-        self.screenShotsList = [[[NSMutableArray alloc]initWithCapacity:2]autorelease];
-        self.canDragBack = YES;
+        [self setUp];
         
     }
     return self;
+}
+
+- (void)setUp
+{
+    self.screenShotsList = [[NSMutableArray alloc]initWithCapacity:2];
+    self.canDragBack = YES;
 }
 
 - (void)dealloc
@@ -57,6 +61,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setUp];
 	// Do any additional setup after loading the view.
     
     // draw a shadow for navigation view to differ the layers obviously.
@@ -139,14 +144,14 @@
 {
     
     NSLog(@"Move to:%f",x);
-    x = x>320?320:x;
+    x = x>TOP_VIEW_WIDTH?TOP_VIEW_WIDTH:x;
     x = x<0?0:x;
     
     CGRect frame = TOP_VIEW.frame;
     frame.origin.x = x;
     TOP_VIEW.frame = frame;
     
-    float scale = (x/6400)+0.95;
+    float scale = (x/(20*TOP_VIEW_WIDTH))+0.95;
     float alpha = 0.4 - (x/800);
 
     lastScreenShotView.transform = CGAffineTransformMakeScale(scale, scale);
